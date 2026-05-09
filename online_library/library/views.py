@@ -17,8 +17,14 @@ def borrowed_books(request):
 @login_required
 def user_books(request):
     books = Book.objects.all()
+    borrowed_books = list(BorrowRecord.objects.filter(
+    user=request.user,
+    returned=False
+    ).values_list('book_id', flat=True)
+)
     context = {
-        'books': books
+        'books': books,
+        'borrowed_books' : borrowed_books,
     }
     return render(request, 'user_books.html', context)
 
@@ -46,8 +52,34 @@ def borrow_book(request, book_id):
 
         book.save()
 
+<<<<<<< Updated upstream
     return redirect('borrowed_books')
 
+=======
+    return redirect(request.META.get('HTTP_REFERER', 'home'))
+
+@login_required
+def unborrow_book(request, book_id):
+
+    book = get_object_or_404(Book, id=book_id)
+
+    borrow_record = BorrowRecord.objects.filter(
+        user=request.user,
+        book=book,
+        returned=False
+    ).first()
+
+    if borrow_record:
+
+        borrow_record.returned = True
+        borrow_record.save()
+
+        book.copies += 1
+        book.save()
+
+    return redirect('books')
+    
+>>>>>>> Stashed changes
 @login_required
 def search(request):
     title = request.GET.get('title', '')
@@ -162,6 +194,7 @@ def login_view(request):
         if user is not None:
             login(request, user)
             
+            messages.success(request, "Login successful!")
 
             next_url = request.GET.get('next')
 
