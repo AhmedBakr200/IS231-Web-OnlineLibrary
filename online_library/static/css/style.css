@@ -361,30 +361,35 @@ main {
 .delete-btn {
   display: inline-block;
   padding: 0.8rem 2rem;
-  background-color: var(--secondary-color);
-  color: var(--light-text);
+  background-color: #dc2626;
+  color: white;
   border: none;
   border-radius: 6px;
   font-size: 1rem;
   font-weight: 600;
+  font-family: inherit;
   cursor: pointer;
   transition: var(--transition);
   box-shadow: var(--shadow);
   text-decoration: none;
   margin-top: 1rem;
-  background: #dc2626;
-  color: white;
+}
+
+.delete-btn:hover {
+  background-color: #b91c1c;
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-3px);
 }
 
 .details-btn {
   background: #e0e0e0;
- /* color: #333 !important;
-  font-size: 14px;*/
+  color: #333 !important;
+  font-size: 14px;
 }
 
-/*.details-btn:hover {
+.details-btn:hover {
   background: #d0d0d0;
-}*/
+}
 /* ========================================
    USER BOOK DETAILS - CARD LAYOUT
    ======================================== */
@@ -706,14 +711,14 @@ form {
   margin: 0 auto;
 }
 
-/*form.no-style {
+form.no-style {
   background: transparent;
   padding: 0;
   border-radius: 0;
   box-shadow: none;
   max-width: none;
   margin: 0;
-}*/
+}
 
 form h2 {
   margin-top: 0;

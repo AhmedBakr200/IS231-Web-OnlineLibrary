@@ -4,9 +4,10 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from .models import Profile, Book
+from .models import Profile, Book, BorrowRecord
 import re
-
+from .forms import BookForm
+from datetime import datetime
 def home(request):
     return render(request, 'index.html')
 
@@ -16,8 +17,51 @@ def borrowed_books(request):
 
 @login_required
 def user_books(request):
-    return render(request, 'user_books.html')
+    books = Book.objects.all()
+    context = {
+        'books': books
+    }
+    return render(request, 'user_books.html', context)
 
+@login_required
+def book_details(request, id):
+    book = get_object_or_404(Book, id=id)
+    borrowed = BorrowRecord.objects.filter(user=request.user, book = book, returned=False).exists()
+    available = book.copies > 0
+    context = {
+        'book': book, 
+        'borrowed':borrowed, 
+        'available':available
+    }
+    return render(request, 'user_book_details.html', context)
+
+@login_required
+def borrow_book(request, book_id):
+
+    book = get_object_or_404(Book, id=book_id)
+
+    already_borrowed = BorrowRecord.objects.filter(
+        user=request.user,
+        book=book,
+        returned=False
+    ).exists()
+
+    if already_borrowed:
+        return redirect(request.META.get('HTTP_REFERER', 'home')) # IMPLEMENT UNBORROW THEN REMOVE COMMENT  - 3omda to El-Hendy
+
+    if book.copies > 0:
+
+        BorrowRecord.objects.create(
+            user=request.user,
+            book=book,
+            returned=False
+        )
+
+        book.copies -= 1
+        book.save()
+
+    return redirect(request.META.get('HTTP_REFERER', 'home'))
+    
 @login_required
 def search(request):
     title = request.GET.get('title', '')
@@ -166,6 +210,8 @@ def admin_book_details(request, id):
 
 def increase_copies(request, id):
     book = get_object_or_404(Book, id=id)
+    if book.copies == 0:
+        book.availability = "Available"
     book.copies += 1
     book.save()
     return redirect('admin_books')
@@ -175,6 +221,8 @@ def decrease_copies(request, id):
     book = get_object_or_404(Book, id=id)
     if book.copies > 0:
         book.copies -= 1
+        if book.copies == 0:
+            book.availability = 'Out of Stock'
         book.save()
     return redirect('admin_books')
 
@@ -186,3 +234,43 @@ def delete_book(request, id):
     return redirect('admin_books')
 
 
+def Validate_book(new_book_data):
+    errors = []
+    if new_book_data['year'] > datetime.now().year:
+        errors.append("The Publishing Year Can't Be In The Future.")
+    
+    if new_book_data['copies'] < 1:
+        errors.append("The Book Copies Can't Be Less Than 1")
+
+    return errors
+
+
+def admin_add_book(request):
+    form = BookForm()
+    errors = []
+    if request.method == 'POST':
+        errors = []
+        form = BookForm(request.POST)
+        if form.is_valid():
+            new_book_data = form.cleaned_data
+            errors=Validate_book(new_book_data)
+            if not errors:
+                new_book = form.save()
+                return redirect('admin_book_details',id = new_book.id)
+    return render(request, 'admin_add_book.html',{'form':form, 'errors':errors})
+
+
+
+def admin_edit_book(request, id):
+    old_book = get_object_or_404(Book, id=id)
+    errors = []
+    form = BookForm(instance=old_book)
+    if request.method == 'POST':
+       form = BookForm(request.POST, instance=old_book)
+       if form.is_valid():
+            new_book_data = form.cleaned_data
+            errors=Validate_book(new_book_data)
+            if not errors:
+                form.save()
+                return redirect('admin_book_details',id = id)
+    return render(request, 'admin_edit_book.html',{'form':form, 'errors':errors})

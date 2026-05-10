@@ -24,12 +24,102 @@
 
     <main>
 
+         {% if messages %}
+
+            {% for message in messages %}
+
+                <script>
+                    alert("{{ message }}");
+                </script>
+
+            {% endfor %}
+
+        {% endif %}
+
         <h2>Available Books</h2>
 
-        <div class="books-container" id="booksContainer">
-            <!-- JS will insert cards -->
-        </div>
+        <div class="books-container">
 
+            {% for book in books %}
+
+                <div class="book-card">
+
+                    <div class="book-cover">
+
+                        <img src="{{ book.image }}"
+                             style="width:100%;
+                                    height:100%;
+                                    object-fit:cover;">
+
+                    </div>
+
+                    <div class="book-content">
+
+                        <div class="book-title">
+                            {{ book.title }}
+                        </div>
+
+                        <div class="book-author">
+                            {{ book.author }}
+                        </div>
+
+                        <div>
+
+                            📅 {{ book.year }}
+
+                            {% if book.copies > 0 %}
+
+                                <span class="status available">
+                                    Available
+                                </span>
+
+                            {% else %}
+
+                                <span class="status out-of-stock">
+                                    Out of Stock
+                                </span>
+
+                            {% endif %}
+
+                        </div>
+
+                        <div class="book-actions">
+
+                            {% if book.copies > 0 %}
+
+                                <button 
+                                class="borrow-btn"
+                                onclick="borrowBook({{ book.id }})">
+
+                                Borrow
+
+                                </button>
+
+                            {% else %}
+
+                                <button disabled>
+                                    Unavailable
+                                </button>
+
+                            {% endif %}
+
+                            <button
+                                class="details-btn"
+                                onclick="goToDetails({{ book.id }})">
+
+                                Details
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
     </main>
 
     <footer>
@@ -41,7 +131,7 @@
                 <input class="contact" type="text" name="name" placeholder="Your Name" required>
                 <input class="contact" type="email" name="email" placeholder="Your Email" required>
             </div>
-            <textarea class="contact" name="massege" placeholder="Your Massege"></textarea><br><br>
+            <textarea class="contact" name="message" placeholder="Your Message"></textarea><br><br>
             <button class="btn" type="submit">Submit</button>
             <button class="btn" type="reset">Reset</button>
         </form>
@@ -49,7 +139,6 @@
         <p>Copyright @ 2026 All Rights</p>
     </footer>
 
-
 </body>
-
+<script src="{% static 'js/books.js' %}"></script>
 </html>
