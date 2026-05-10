@@ -67,7 +67,13 @@
 
                             📅 {{ book.year }}
 
-                            {% if book.copies > 0 %}
+                            {% if book.id in borrowed_books %}
+
+                                <span class="status borrowed">
+                                    Borrowed
+                                </span>
+
+                            {% elif book.copies > 0 %}
 
                                 <span class="status available">
                                     Available
@@ -85,20 +91,30 @@
 
                         <div class="book-actions">
 
-                            {% if book.copies > 0 %}
+                            {% if book.id in borrowed_books %}
 
                                 <button 
-                                class="borrow-btn"
-                                onclick="borrowBook({{ book.id }})">
+                                class="unborrow-btn"
+                                onclick="unborrowBook({{ book.id }})">
 
-                                Borrow
+                                Unborrow
+
+                                </button>
+
+                            {% elif book.copies > 0 %}
+
+                                 <button 
+                                 class="borrow-btn"
+                                 onclick="borrowBook({{ book.id }})">
+
+                                 Borrow
 
                                 </button>
 
                             {% else %}
 
                                 <button disabled>
-                                    Unavailable
+                                 Unavailable
                                 </button>
 
                             {% endif %}

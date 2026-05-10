@@ -18,8 +18,14 @@ def borrowed_books(request):
 @login_required
 def user_books(request):
     books = Book.objects.all()
+    borrowed_books = list(BorrowRecord.objects.filter(
+    user=request.user,
+    returned=False
+    ).values_list('book_id', flat=True)
+)
     context = {
-        'books': books
+        'books': books,
+        'borrowed_books' : borrowed_books,
     }
     return render(request, 'user_books.html', context)
 
@@ -35,6 +41,7 @@ def book_details(request, id):
     }
     return render(request, 'user_book_details.html', context)
 
+
 @login_required
 def borrow_book(request, book_id):
 
@@ -47,7 +54,7 @@ def borrow_book(request, book_id):
     ).exists()
 
     if already_borrowed:
-        return redirect(request.META.get('HTTP_REFERER', 'home')) # IMPLEMENT UNBORROW THEN REMOVE COMMENT  - 3omda to El-Hendy
+        return redirect(request.META.get('HTTP_REFERER', 'home'))
 
     if book.copies > 0:
 
@@ -61,7 +68,29 @@ def borrow_book(request, book_id):
         book.save()
 
     return redirect(request.META.get('HTTP_REFERER', 'home'))
-    
+
+
+@login_required
+def unborrow_book(request, book_id):
+
+    book = get_object_or_404(Book, id=book_id)
+
+    borrow_record = BorrowRecord.objects.filter(
+        user=request.user,
+        book=book,
+        returned=False
+    ).first()
+
+    if borrow_record:
+
+        borrow_record.returned = True
+        borrow_record.save()
+
+        book.copies += 1
+        book.save()
+
+    return redirect('books')
+  
 @login_required
 def search(request):
     title = request.GET.get('title', '')
@@ -176,6 +205,7 @@ def login_view(request):
         if user is not None:
             login(request, user)
             
+            messages.success(request, "Login successful!")
 
             next_url = request.GET.get('next')
 

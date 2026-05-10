@@ -7,3 +7,8 @@ function goToDetails(id) {
 function borrowBook(id) {
     window.location.href = `/borrow/${id}/`;
 }
+
+// ================= UNBORROW BOOK =================
+function unborrowBook(id) {
+    window.location.href = `/unborrow/${id}/`;
+}
