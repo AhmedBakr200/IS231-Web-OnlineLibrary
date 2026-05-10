@@ -85,8 +85,15 @@
                 <div>
                     📅 {{ book.year }}
 
-                    <span class="status">
-                        {{ book.availability }}
+                    <span class="status 
+                    {% if book.availability == 'Available' %} available
+                                
+                    {% elif book.availability == 'Borrowed' %} borrowed
+    
+                    {% else %} out-of-stock
+    
+                    {% endif %} "> 
+                    {{ book.availability }}
                     </span>
                 </div>
 
@@ -94,9 +101,7 @@
 
                     {% if book.availability == "Available" %}
 
-                        <button class="borrow-btn">
-                            Borrow
-                        </button>
+                        <button  class="borrow-btn" onclick="borrowBook({{ book.id }})"> Borrow </button>
 
                     {% else %}
 
@@ -147,4 +152,5 @@
 
 
 </body>
+<script src="{% static 'js/books.js' %}"></script>
 </html>

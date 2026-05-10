@@ -1,8 +1,9 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <title>Edit Book Details - Online Library</title>
 </head>
 <body>
@@ -19,9 +20,10 @@
     <hr>
     <main>
         <h2>Edit Book Details</h2>
-        <form method="post" id="EditBookDetails" name="BookDetails" enctype="multipart/form-data" autocomplete="off">
-
-            <label for="title">Title</label>
+        <form method="post" id="EditBookDetails" name="BookDetails" autocomplete="off">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <!-- <label for="title">Title</label>
             <input type="text" id="title" name="title" required autofocus><br><br>
 
             <label for="author">Author</label>
@@ -63,8 +65,11 @@
             <label for="image">Cover URL</label>
             <input type="url" id="image" name="image" required><br><br>
             <label for="copies">Available Copies</label>
-            <input type="number" id="copies" name="copies" required min="1"><br><br>
+            <input type="number" id="copies" name="copies" required min="1"><br><br> -->
             <input class="btn" type="submit" value="Save Changes"><br>
+            {% for error in errors %}
+            <small style="color:red">{{error}}</small><br>
+            {% endfor %}
         </form>
     </main>
     <hr>
@@ -84,8 +89,8 @@
 
         <p>Copyright @ 2026 All Rights</p>
     </footer>
-    <script src="../js/store.js"></script>
+    <!-- <script src="../js/store.js"></script>
 <script>requireAdmin();</script>
-<script src="../js/navigation.js"></script>
+<script src="../js/navigation.js"></script> -->
 </body>
 </html>

@@ -1,10 +1,11 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
   <title>Book Details - Online Library</title>
 </head>
 
@@ -20,32 +21,34 @@
     </nav>
 
   </header>
-
-
   <main>
     <section class="book-details-card">
       <div class="book-details-card__cover">
-        <img class="book-image" src="" alt="book cover">
+        <img class="book-image" src="{{book.image}}" alt="book cover">
       </div>
 
       <div class="book-details-card__content">
         <div class="book-details-card__header">
-          <h2 class="book-details-card__title"></h2>
-          <span class="status-badge status-badge--available"></span>
+          <h2 class="book-details-card__title">{{book.title}}</h2>
+          <span class="status-badge status-badge--available">{{book.availability}}</span>
         </div>
         <div class="meta">
-          <p class="book-details-card__meta book-author"></p>
-          <p class="book-details-card__meta book-category"></p>
-          <p class="book-details-card__meta book-year"></p>
+          <p class="book-details-card__meta book-author">{{book.author}}</p>
+          <p class="book-details-card__meta book-category">{{book.category}}</p>
+          <p class="book-details-card__meta book-year">{{book.year}}</p>
         </div>
         <div class="book-details-card__actions">
-          <a class="btn" href="user_books.html">Back to Books</a>
-          <button class="btn btn-primary borrow-btn" type="button">Borrow Book</button>
+          <a class="btn" href="{% url 'books' %}">Back to Books</a>
+          {% if borrowed %}
+          <a class="btn" href="{% url 'borrow_book' book.id %}">Return</a>
+          {% elif available %}
+          <a class="btn" href="{% url 'borrow_book' book.id %}">Borrow</a>
+          {% else %}
+          {% endif %}
         </div>
       </div>
     </section>
   </main>
-
   <footer>
     <form action="https://formsubmit.co/be136af79a36ee1f98093677271e4c0c" method="POST">
       <div>
@@ -62,10 +65,10 @@
 
     <p>Copyright @ 2026 All Rights</p>
   </footer>
-  <script src="../js/store.js"></script>
+  <!-- <script src="../js/store.js"></script>
 <script>requireLogin();</script>
 <script src="../js/books.js"></script>
-<script src="../js/book_details.js"></script>
+<script src="../js/book_details.js"></script> -->
 </body>
 
 </html>
