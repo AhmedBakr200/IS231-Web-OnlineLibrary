@@ -32,7 +32,7 @@
             <div class="book-details-card__header">
                 <h2 class="book-details-card__title">{{ book.title }}</h2>
 
-                <span class="status-badge {% if book.copies > 0 %}available{% else %}out-of-stock{% endif %}">
+                <span class="status-badge {% if book.copies > 0 %}status-badge--available{% else %}status-badge--out{% endif %}">
                     {% if book.copies > 0 %}Available{% else %}Out of Stock{% endif %}
                 </span>
             </div>
