@@ -8,6 +8,14 @@ from .models import Profile, Book, BorrowRecord
 import re
 from .forms import BookForm
 from datetime import datetime
+from django.http import HttpResponseForbidden
+def admin_required(request):
+
+    if not request.user.is_superuser:
+        return False
+
+    return True
+
 def home(request):
     return render(request, 'index.html')
 
@@ -33,11 +41,9 @@ def user_books(request):
 def book_details(request, id):
     book = get_object_or_404(Book, id=id)
     borrowed = BorrowRecord.objects.filter(user=request.user, book = book, returned=False).exists()
-    available = book.copies > 0
     context = {
         'book': book, 
         'borrowed':borrowed, 
-        'available':available
     }
     return render(request, 'user_book_details.html', context)
 
@@ -212,6 +218,9 @@ def login_view(request):
             if next_url:
                 return redirect(next_url)
 
+            if user.is_superuser:
+                return redirect('admin_books')
+
             return redirect('books')
 
         else:
@@ -228,79 +237,124 @@ def logout_view(request):
     logout(request)
     return redirect('login')
 
+@login_required
 def admin_books(request):
+
+    if not admin_required(request):
+        return redirect('books')
+
     books = Book.objects.all()
+
     return render(request, 'admin_books.html', {'books': books})
 
 
+@login_required
 def admin_book_details(request, id):
+
+    if not admin_required(request):
+        return redirect('books')
+
     book = get_object_or_404(Book, id=id)
+
     return render(request, 'admin_book_details.html', {'book': book})
 
 
+@login_required
 def increase_copies(request, id):
+
+    if not admin_required(request):
+        return redirect('books')
+
     book = get_object_or_404(Book, id=id)
+
     if book.copies == 0:
         book.availability = "Available"
+
     book.copies += 1
     book.save()
+
     return redirect('admin_books')
 
 
+@login_required
 def decrease_copies(request, id):
+
+    if not admin_required(request):
+        return redirect('books')
+
     book = get_object_or_404(Book, id=id)
+
     if book.copies > 0:
+
         book.copies -= 1
+
         if book.copies == 0:
             book.availability = 'Out of Stock'
+
         book.save()
+
     return redirect('admin_books')
 
 
+@login_required
 def delete_book(request, id):
+
+    if not admin_required(request):
+        return redirect('books')
+
     book = get_object_or_404(Book, id=id)
+
     if request.method == 'POST':
         book.delete()
+
     return redirect('admin_books')
 
 
-def Validate_book(new_book_data):
-    errors = []
-    if new_book_data['year'] > datetime.now().year:
-        errors.append("The Publishing Year Can't Be In The Future.")
-    
-    if new_book_data['copies'] < 1:
-        errors.append("The Book Copies Can't Be Less Than 1")
 
-    return errors
-
-
+@login_required
 def admin_add_book(request):
-    form = BookForm()
-    errors = []
+
+    if not admin_required(request):
+        return redirect('books')
+
     if request.method == 'POST':
-        errors = []
+
         form = BookForm(request.POST)
+
         if form.is_valid():
-            new_book_data = form.cleaned_data
-            errors=Validate_book(new_book_data)
-            if not errors:
-                new_book = form.save()
-                return redirect('admin_book_details',id = new_book.id)
-    return render(request, 'admin_add_book.html',{'form':form, 'errors':errors})
+
+            new_book = form.save()
+
+            return redirect('admin_book_details', id=new_book.id)
+
+        return render(request, 'admin_add_book.html', {'form': form})
+
+    form = BookForm()
+
+    return render(request, 'admin_add_book.html', {'form': form})
 
 
 
+@login_required
 def admin_edit_book(request, id):
+
+    if not admin_required(request):
+        return redirect('books')
+
     old_book = get_object_or_404(Book, id=id)
-    errors = []
-    form = BookForm(instance=old_book)
+
     if request.method == 'POST':
-       form = BookForm(request.POST, instance=old_book)
-       if form.is_valid():
-            new_book_data = form.cleaned_data
-            errors=Validate_book(new_book_data)
-            if not errors:
-                form.save()
-                return redirect('admin_book_details',id = id)
-    return render(request, 'admin_edit_book.html',{'form':form, 'errors':errors})
+
+        form = BookForm(request.POST, instance=old_book)
+
+        if form.is_valid():
+
+            form.save()
+
+            return redirect('admin_book_details', id=id)
+
+        return render(request, 'admin_add_book.html', {'form': form})
+
+    form = BookForm(instance=old_book)
+
+    return render(request, 'admin_edit_book.html', {'form': form})
