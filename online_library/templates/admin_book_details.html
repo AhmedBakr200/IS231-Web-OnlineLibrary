@@ -38,10 +38,10 @@
             </div>
 
             <div class="meta">
-                <p class="book-details-card__meta">Author: {{ book.author }}</p>
-                <p class="book-details-card__meta">Category: {{ book.category }}</p>
-                <p class="book-details-card__meta">Year: {{ book.year }}</p>
-                <p class="book-details-card__meta">Copies: {{ book.copies }}</p>
+                <p class="book-details-card__meta"><b>Author:</b> {{ book.author }}</p>
+                <p class="book-details-card__meta"><b>Category:</b> {{ book.category }}</p>
+                <p class="book-details-card__meta"><b>Year:</b> {{ book.year }}</p>
+                <p class="book-details-card__meta"><b>Copies:</b> {{ book.copies }}</p>
             </div>
 
             {% if book.description %}
@@ -79,7 +79,7 @@
             <input class="contact" type="text" name="name" placeholder="Your Name" required>
             <input class="contact" type="email" name="email" placeholder="Your Email" required>
         </div>
-        <textarea class="contact" name="massege" placeholder="Your Massege"></textarea><br><br>
+        <textarea class="contact" name="message" placeholder="Your Message"></textarea><br><br>
         <button class="btn" type="submit">Submit</button>
         <button class="btn" type="reset">Reset</button>
     </form>

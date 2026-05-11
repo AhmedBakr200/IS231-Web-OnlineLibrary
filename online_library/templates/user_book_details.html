@@ -39,9 +39,9 @@
           {% endif %}
         </div>
         <div class="meta">
-          <p class="book-details-card__meta book-author">{{book.author}}</p>
-          <p class="book-details-card__meta book-category">{{book.category}}</p>
-          <p class="book-details-card__meta book-year">{{book.year}}</p>
+          <p class="book-details-card__meta book-author"> <b>Author:</b> {{book.author}}</p>
+          <p class="book-details-card__meta book-category"> <b>Category:</b> {{book.category}}</p>
+          <p class="book-details-card__meta book-year"> <b>Year:</b> {{book.year}}</p>
         </div>
         <div class="book-details-card__actions">
           <a class="btn" href="{% url 'books' %}">Back to Books</a>
@@ -64,7 +64,7 @@
         <input class="contact" type="text" name="name" placeholder="Your Name" required>
         <input class="contact" type="email" name="email" placeholder="Your Email" required>
       </div>
-      <textarea class="contact" name="massege" placeholder="Your Massege"></textarea><br><br>
+      <textarea class="contact" name="message" placeholder="Your Message"></textarea><br><br>
       <button class="btn" type="submit">Submit</button>
       <button class="btn" type="reset">Reset</button>
     </form>
