@@ -1,6 +1,8 @@
 from django import forms
 from django.forms import ModelForm
 from .models import Book
+from django.core.validators import MinValueValidator, MaxValueValidator
+import datetime
 CATEGORY_CHOICES = [
     ("Biography", "Biography"),
     ("History", "History"),
@@ -25,11 +27,22 @@ CATEGORY_CHOICES = [
     ("Children's Books", "Children's Books"),
     ("Graphic Novels", "Graphic Novels"),
 ]
-class BookForm(ModelForm):
-	class Meta:
-		model=Book
-		fields = ('title', 'author','category', 'year','description','copies','image')
-		labels = {
+class BookForm(forms.ModelForm):
+    year = forms.IntegerField(
+        validators=[
+            MinValueValidator(1000, message="The year cannot be less than 1000"),
+            MaxValueValidator(datetime.date.today().year, message="Year cannot be in the future.")
+        ]
+    )
+    copies = forms.IntegerField(
+        validators=[
+            MinValueValidator(1, message="The copies cannot be less than 1"),
+        ]
+    )
+    class Meta:
+        model=Book
+        fields = ('title', 'author','category', 'year','description','copies','image')
+        labels = {
 			'title' : 'Title',
             'author' : 'Author',
             'category' : 'Category',
@@ -38,13 +51,26 @@ class BookForm(ModelForm):
             'image' : 'Cover URL',
             'description' : 'Description',
         }
-		widgets = {
+        widgets = {
 			'title' : forms.TextInput(attrs={'placeholder':'Enter Book Title'}),
             'author' : forms.TextInput(attrs={'placeholder':'Enter Book Author'}),
             'category' : forms.Select(choices=CATEGORY_CHOICES),
             'year' : forms.TextInput(attrs={'placeholder':'Enter Book Year'}),
             'copies' : forms.TextInput(attrs={'placeholder':'Enter Book Number of Copies'}),
             'image' : forms.TextInput(attrs={'placeholder':'Enter Book Cover Image URL'}),
-            'description' : forms.TextInput(attrs={'placeholder':'Enter Book Description'}),
+            'description' : forms.Textarea(attrs={'placeholder':'Enter Book Description'}),
         }
-		
+    
+    def clean_author(self):
+        author = self.cleaned_data["author"]
+        if any(char.isdigit() for char in author):
+            raise forms.ValidationError("The author name can't contain digits.")
+        return author
+    
+    def clean(self):
+        cleaned_data = super().clean()
+        title = cleaned_data.get('title')
+        author = cleaned_data.get('author')
+        if title and author and title.lower() == author.lower():
+            raise forms.ValidationError("The book title and author cannot be the same.")
+        return cleaned_data

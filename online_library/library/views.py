@@ -33,11 +33,9 @@ def user_books(request):
 def book_details(request, id):
     book = get_object_or_404(Book, id=id)
     borrowed = BorrowRecord.objects.filter(user=request.user, book = book, returned=False).exists()
-    available = book.copies > 0
     context = {
         'book': book, 
         'borrowed':borrowed, 
-        'available':available
     }
     return render(request, 'user_book_details.html', context)
 
@@ -264,43 +262,26 @@ def delete_book(request, id):
     return redirect('admin_books')
 
 
-def Validate_book(new_book_data):
-    errors = []
-    if new_book_data['year'] > datetime.now().year:
-        errors.append("The Publishing Year Can't Be In The Future.")
-    
-    if new_book_data['copies'] < 1:
-        errors.append("The Book Copies Can't Be Less Than 1")
-
-    return errors
-
 
 def admin_add_book(request):
-    form = BookForm()
-    errors = []
     if request.method == 'POST':
-        errors = []
         form = BookForm(request.POST)
         if form.is_valid():
-            new_book_data = form.cleaned_data
-            errors=Validate_book(new_book_data)
-            if not errors:
-                new_book = form.save()
-                return redirect('admin_book_details',id = new_book.id)
-    return render(request, 'admin_add_book.html',{'form':form, 'errors':errors})
+            new_book = form.save()
+            return redirect('admin_book_details',id = new_book.id)
+        return render(request, 'admin_add_book.html',{'form':form})
+    form = BookForm()
+    return render(request, 'admin_add_book.html',{'form':form})
 
 
 
 def admin_edit_book(request, id):
     old_book = get_object_or_404(Book, id=id)
-    errors = []
-    form = BookForm(instance=old_book)
     if request.method == 'POST':
        form = BookForm(request.POST, instance=old_book)
        if form.is_valid():
-            new_book_data = form.cleaned_data
-            errors=Validate_book(new_book_data)
-            if not errors:
-                form.save()
-                return redirect('admin_book_details',id = id)
-    return render(request, 'admin_edit_book.html',{'form':form, 'errors':errors})
+            form.save()
+            return redirect('admin_book_details',id = id)
+       return render(request, 'admin_add_book.html',{'form':form})
+    form = BookForm(instance=old_book)
+    return render(request, 'admin_edit_book.html',{'form':form})

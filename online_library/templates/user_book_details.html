@@ -14,10 +14,10 @@
     <h1>Online Library</h1>
 
     <nav>
-      <a href="../index.html">Home</a> |
-      <a href="../pages/search.html">Search</a> |
-      <a href="../pages/borrowed_books.html">My Books</a> |
-      <a href="../index.html">Logout</a>
+      <a href="{% url 'home' %}">Home</a> |
+      <a href="{% url 'search' %}">Search</a> |
+      <a href="{% url 'borrowed_books' %}">My Books</a> |
+      <a href="{% url 'logout' %}">Logout</a>
     </nav>
 
   </header>
@@ -30,7 +30,13 @@
       <div class="book-details-card__content">
         <div class="book-details-card__header">
           <h2 class="book-details-card__title">{{book.title}}</h2>
-          <span class="status-badge status-badge--available">{{book.availability}}</span>
+          {% if borrowed %}
+          <span class="status-badge status-badge--borrowed">Borrowed</span>
+          {% elif book.copies > 0 %}
+          <span class="status-badge status-badge--available">Available</span>
+          {% else %}
+          <span class="status-badge status-badge--out">Out of Stock</span>
+          {% endif %}
         </div>
         <div class="meta">
           <p class="book-details-card__meta book-author">{{book.author}}</p>
@@ -40,8 +46,8 @@
         <div class="book-details-card__actions">
           <a class="btn" href="{% url 'books' %}">Back to Books</a>
           {% if borrowed %}
-          <a class="btn" href="{% url 'borrow_book' book.id %}">Return</a>
-          {% elif available %}
+          <a class="btn" href="{% url 'unborrow_book' book.id %}">Return</a>
+          {% elif book.copies > 0 %}
           <a class="btn" href="{% url 'borrow_book' book.id %}">Borrow</a>
           {% else %}
           {% endif %}
