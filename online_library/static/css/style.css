@@ -343,8 +343,7 @@ main {
   transition: background 0.3s ease;*/
 }
 
-.book-actions a:hover,
-.book-actions button:hover {
+.book-actions a:hover{
   background: #e4e4e4;
 }
 
@@ -352,10 +351,16 @@ main {
   background: #2d6cdf;
   color: white;
 }
+.borrow-btn:hover {
+  background: var(--primary-light);
+}
 
 .unborrow-btn {
   background: #dc2626;
   color: white;
+}
+.unborrow-btn:hover {
+  background: var(--primary-light);
 }
 
 .delete-btn {
