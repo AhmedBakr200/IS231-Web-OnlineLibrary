@@ -11,9 +11,23 @@ from datetime import datetime
 def home(request):
     return render(request, 'index.html')
 
+
 @login_required
 def borrowed_books(request):
-    return render(request, 'borrowed_books.html')
+
+    borrowed_records = BorrowRecord.objects.filter(
+        user=request.user,
+        returned=False
+    )
+
+    books = []
+
+    for record in borrowed_records:
+        books.append(record.book)
+
+    return render(request, 'borrowed_books.html', {
+        'books': books
+    })
 
 @login_required
 def user_books(request):
@@ -87,10 +101,11 @@ def unborrow_book(request, book_id):
         book.copies += 1
         book.save()
 
-    return redirect('books')
+    return redirect(request.META.get('HTTP_REFERER', 'home'))
   
 @login_required
 def search(request):
+
     title = request.GET.get('title', '')
     author = request.GET.get('author', '')
     category = request.GET.get('category', 'Any')
@@ -98,6 +113,7 @@ def search(request):
 
     books = Book.objects.all()
 
+    # Search filters
     if title:
         books = books.filter(title__icontains=title)
 
@@ -107,11 +123,41 @@ def search(request):
     if category != 'Any':
         books = books.filter(category=category)
 
-    if availability != 'Any':
-        books = books.filter(availability=availability)
+    # Convert queryset to list so we can add custom properties
+    books = list(books)
+
+    filtered_books = []
+
+    for book in books:
+
+        # Check if current user borrowed this book
+        book.user_has_borrowed = BorrowRecord.objects.filter(
+            user=request.user,
+            book=book,
+            returned=False
+        ).exists()
+
+        # Dynamic availability status
+        if book.user_has_borrowed:
+            book.display_status = "Borrowed"
+
+        elif book.copies > 0:
+            book.display_status = "Available"
+
+        else:
+            book.display_status = "Out of Stock"
+
+        # Availability filter
+        if availability == "Available" and book.display_status != "Available":
+            continue
+
+        if availability == "Borrowed" and book.display_status != "Borrowed":
+            continue
+
+        filtered_books.append(book)
 
     return render(request, 'search.html', {
-        'books': books,
+        'books': filtered_books,
         'title': title,
         'author': author,
         'category': category,
@@ -203,8 +249,6 @@ def login_view(request):
         if user is not None:
             login(request, user)
             
-            messages.success(request, "Login successful!")
-
             next_url = request.GET.get('next')
 
             if next_url:
