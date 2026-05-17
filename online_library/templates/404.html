@@ -1,0 +1,125 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Page Not Found</title>
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    <style>
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            height: 100vh;
+        }
+
+        .error-container {
+
+            text-align: center;
+
+            background: white;
+
+            padding: 50px;
+
+            border-radius: 20px;
+
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+
+            width: 400px;
+        }
+
+        .error-code {
+
+            font-size: 90px;
+
+            font-weight: bold;
+
+            color: #2d6cdf;
+
+            margin-bottom: 10px;
+        }
+
+        .error-title {
+
+            font-size: 28px;
+
+            margin-bottom: 15px;
+
+            color: #222;
+        }
+
+        .error-text {
+
+            color: #666;
+
+            margin-bottom: 30px;
+
+            line-height: 1.6;
+        }
+
+        .home-btn {
+
+            display: inline-block;
+
+            text-decoration: none;
+
+            background: #2d6cdf;
+
+            color: white;
+
+            padding: 12px 25px;
+
+            border-radius: 10px;
+
+            transition: 0.3s;
+        }
+
+        .home-btn:hover {
+            background: #1f5bc4;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <div class="error-container">
+
+        <div class="error-code">
+            404
+        </div>
+
+        <div class="error-title">
+            Page Not Found
+        </div>
+
+        <div class="error-text">
+
+            Sorry, the page you are looking for does not exist
+            or may have been moved.
+
+        </div>
+
+        <a href="{% url 'home' %}" class="home-btn">
+
+            Back To Home
+
+        </a>
+
+    </div>
+
+</body>
+
+</html>
