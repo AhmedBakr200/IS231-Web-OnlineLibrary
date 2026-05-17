@@ -26,7 +26,70 @@
     <main>
         <h2>My Books</h2>
         <div class="borrowed-header"><a href="{% url 'books' %}" class="btn browse-btn">Browse Books</a></div>
-        <div class="borrowed-books" id="borrowedContainer"></div>
+        <div class="borrowed-books">
+
+    {% for book in books %}
+
+        <div class="book-card">
+
+            <div class="book-cover">
+
+                <img src="{{ book.image }}"
+                     style="width:100%;
+                            height:100%;
+                            object-fit:cover;">
+
+            </div>
+
+            <div class="book-content">
+
+                <div class="book-title">
+                    {{ book.title }}
+                </div>
+
+                <div class="book-author">
+                    {{ book.author }}
+                </div>
+
+                <div>
+                    📅 {{ book.year }}
+
+                    <span class="status borrowed">
+                        Borrowed
+                    </span>
+                </div>
+
+                <div class="book-actions">
+
+                    <button
+                    class="unborrow-btn"
+                    onclick="unborrowBook({{ book.id }})">
+
+                    Unborrow
+
+                    </button>
+
+                    <button
+                    class="details-btn"
+                    onclick="goToDetails({{ book.id }})">
+
+                    Details
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    {% empty %}
+
+        <h3>No borrowed books.</h3>
+
+    {% endfor %}
+
+</div>
 
         </div>
     </main>
@@ -47,10 +110,7 @@
 
         <p>Copyright @ 2026 All Rights</p>
     </footer>
-    <script src="../js/store.js"></script>
-<script>requireLogin();</script>
-<script src="../js/books.js"></script>
-<script src="../js/borrow.js"></script>
+    <script src="{% static 'js/books.js' %}"></script>
 </body>
 
 </html>
