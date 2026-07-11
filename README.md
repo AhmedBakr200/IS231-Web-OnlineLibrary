@@ -76,3 +76,15 @@ The website contains the following HTML pages:
 **Course:** IS231 – Web Technology  
 **Phase:** Phase 1  
 **Year:** 2025/2026
+
+---
+
+## Getting Started
+
+1. Clone the repository.
+2. Open `index.html` in your browser.
+3. Navigate through the pages using the site links.
+
+## Notes
+
+This is a frontend-only project for the first phase of the course.
