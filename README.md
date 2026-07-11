@@ -1,42 +1,39 @@
 # Online Library Website
 
-This project is developed for the **IS231 - Web Technology** course.
+![GitHub repo size](https://img.shields.io/github/repo-size/AhmedBakr200/IS231-Web-OnlineLibrary)
+![GitHub last commit](https://img.shields.io/github/last-commit/AhmedBakr200/IS231-Web-OnlineLibrary)
+![Language](https://img.shields.io/badge/language-HTML%2FCSS%2FJS%2FPython-blue)
 
-## Project Description
+A simple online library website built for the **IS231 – Web Technology** course. The project focuses on the first phase of development and presents a frontend-only interface for browsing, searching, and borrowing books.
 
-The Online Library Website allows users to browse books, search for books, and borrow them.  
-The system supports two types of users:
+## About the Project
+
+The website is designed for two types of users:
 
 - **Admin**
 - **User**
 
-Admins can manage books, while users can search and borrow books.
+Admins can manage books, while users can browse, search, and borrow books.
 
-This is **Phase 1** of the project, which focuses on designing the website interface using **HTML only** without any frameworks.
+This project is currently **Phase 1**, so the focus is on the interface and static pages using **HTML** with supporting **CSS**, **JavaScript**, and **Python** files in the repository.
 
----
+## Key Features
 
-## Features
-
-### Admin
+### Admin Features
 - Add new books
 - View all books
 - View book details
 - Edit book details
 - Delete books
 
-### User
+### User Features
 - Browse available books
 - View book details
 - Borrow books
 - Search for books
 - View borrowed books
 
----
-
-## Pages
-
-The website contains the following HTML pages:
+## Pages Included
 
 - `index.html` – Home page
 - `login.html` – User login
@@ -51,15 +48,22 @@ The website contains the following HTML pages:
 - `user_book_details.html` – Book details for users
 - `cover.html` – Project cover page
 
----
-
 ## Technologies Used
 
 - HTML5
+- CSS3
+- JavaScript
+- Python
 
-(No frameworks were used as required in Phase 1.)
+## Getting Started
 
----
+1. Clone the repository.
+2. Open `index.html` in your browser.
+3. Use the navigation links to explore the website.
+
+## Project Status
+
+This repository contains the Phase 1 version of the project. Future phases may add backend functionality, database integration, and more dynamic features.
 
 ## Team Members
 
@@ -69,22 +73,8 @@ The website contains the following HTML pages:
 - Youssef Gomaa
 - Sara Emad
 
----
-
 ## Course Information
 
 **Course:** IS231 – Web Technology  
 **Phase:** Phase 1  
 **Year:** 2025/2026
-
----
-
-## Getting Started
-
-1. Clone the repository.
-2. Open `index.html` in your browser.
-3. Navigate through the pages using the site links.
-
-## Notes
-
-This is a frontend-only project for the first phase of the course.
